@@ -109,7 +109,6 @@ public class PostsFragment extends Fragment {
                     Log.e(TAG,"Issue with getting more posts", e);
                     return;
                 }
-                Log.i(TAG, "load more data " + posts.toString());
                 addAll(posts);
             }
         });

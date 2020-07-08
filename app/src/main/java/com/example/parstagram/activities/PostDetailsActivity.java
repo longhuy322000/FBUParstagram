@@ -1,6 +1,8 @@
 package com.example.parstagram.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -15,6 +17,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.parstagram.Helper;
 import com.example.parstagram.R;
+import com.example.parstagram.adapters.CommentsAdapter;
+import com.example.parstagram.models.Comment;
 import com.example.parstagram.models.Like;
 import com.example.parstagram.models.Post;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -28,13 +32,13 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PostDetailsActivity extends AppCompatActivity {
 
     private static final String TAG = "PostDetailsActivity";
 
-    ParseUser currentUser;
     TextView tvUsername;
     TextView tvDescription;
     ImageView ivImage;
@@ -45,10 +49,13 @@ public class PostDetailsActivity extends AppCompatActivity {
     EditText etComment;
     Button btnSendComment;
     MaterialButton btnLike;
+    RecyclerView rvComments;
+    CommentsAdapter adapter;
 
     Boolean liked;
     Post post;
     Like like;
+    List<Comment> comments;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -87,8 +94,7 @@ public class PostDetailsActivity extends AppCompatActivity {
                     Log.e(TAG, "issue with getUser", e);
                     return;
                 }
-                currentUser = getUser;
-                Helper.loadCircleCropImage(PostDetailsActivity.this, ivUserCommentImage, currentUser.getParseFile("image"));
+                Helper.loadCircleCropImage(PostDetailsActivity.this, ivUserCommentImage, getUser.getParseFile("image"));
             }
         });
 
@@ -96,40 +102,98 @@ public class PostDetailsActivity extends AppCompatActivity {
         btnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!liked) {
-                    like = post.incrementLike(currentUser);
-                    post.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e != null) {
-                                Log.e(TAG, "unable to saving post after incrementing", e);
-                                return;
-                            }
-                            setLikeActive();
-                            tvLikes.setText(post.getLikesString());
-                            liked = true;
-                        }
-                    });
-                }
-                else {
-                    post.decrementLike(currentUser, like);
-                    post.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e != null) {
-                                Log.e(TAG, "unable to saving post after decrementing", e);
-                                return;
-                            }
-                            setLikeInactive();
-                            tvLikes.setText(post.getLikesString());
-                            liked = false;
-                        }
-                    });
-                }
+                btnLikeOnClick();
             }
         });
 
+        btnSendComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btnSendCommentOnClick();
+            }
+        });
+
+        comments = new ArrayList<>();
+        rvComments = findViewById(R.id.rvComments);
+        adapter = new CommentsAdapter(PostDetailsActivity.this, comments);
+        rvComments.setAdapter(adapter);
+        rvComments.setLayoutManager(new LinearLayoutManager(this));
+
         checkLiked();
+        queryComments();
+    }
+
+    private void btnSendCommentOnClick() {
+        final Comment comment = new Comment();
+        comment.setComment(etComment.getText().toString());
+        comment.setPost(post);
+        comment.setUser(ParseUser.getCurrentUser());
+        comment.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "issues with creating new comment");
+                    return;
+                }
+                etComment.setText("");
+                Helper.hideKeyboard(PostDetailsActivity.this);
+                comments.add(0, comment);
+                adapter.notifyItemInserted(0);
+                rvComments.smoothScrollToPosition(0);
+            }
+        });
+    }
+
+    private void btnLikeOnClick() {
+        if (!liked) {
+            like = post.incrementLike(ParseUser.getCurrentUser());
+            post.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e != null) {
+                        Log.e(TAG, "unable to saving post after incrementing", e);
+                        return;
+                    }
+                    setLikeActive();
+                    tvLikes.setText(post.getLikesString());
+                    liked = true;
+                }
+            });
+        }
+        else {
+            post.decrementLike(ParseUser.getCurrentUser(), like);
+            post.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e != null) {
+                        Log.e(TAG, "unable to saving post after decrementing", e);
+                        return;
+                    }
+                    setLikeInactive();
+                    tvLikes.setText(post.getLikesString());
+                    liked = false;
+                }
+            });
+        }
+    }
+
+    private void queryComments() {
+        ParseQuery<Comment> query = ParseQuery.getQuery(Comment.class);
+        query.include(Comment.KEY_USER);
+        query.whereEqualTo(Comment.KEY_POST, post);
+        query.setLimit(20);
+        query.addDescendingOrder(Comment.KEY_CREATED_AT);
+        query.findInBackground(new FindCallback<Comment>() {
+            @Override
+            public void done(List<Comment> getComments, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG,"Issue with getting comments", e);
+                    return;
+                }
+                comments.addAll(getComments);
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void checkLiked() {

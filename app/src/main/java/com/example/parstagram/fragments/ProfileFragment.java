@@ -15,7 +15,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
@@ -25,6 +28,7 @@ import com.example.parstagram.Helper;
 import com.example.parstagram.activities.LoginActivity;
 import com.example.parstagram.R;
 import com.example.parstagram.adapters.PostsAdapter;
+import com.example.parstagram.adapters.ProfilePostsAdapter;
 import com.example.parstagram.models.Post;
 import com.example.parstagram.models.User;
 import com.parse.FindCallback;
@@ -42,19 +46,21 @@ import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
-public class ProfileFragment extends PostsFragment {
+public class ProfileFragment extends Fragment {
 
     private static final String TAG = "ProfileFragment";
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
 
     CameraHelper cameraHelper;
-    ParseUser currentUser;
+    ParseUser user;
     TextView tvUsername;
     Button btnLogout;
     ImageView ivUserImage;
+    RecyclerView rvPosts;
+    ProfilePostsAdapter adapter;
+    List<Post> allPosts;
 
     public ProfileFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -92,16 +98,17 @@ public class ProfileFragment extends PostsFragment {
         });
 
         allPosts = new ArrayList<>();
-        adapter = new PostsAdapter(getContext(), allPosts);
+        adapter = new ProfilePostsAdapter(getContext(), allPosts);
         rvPosts.setAdapter(adapter);
-        rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
+        StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        rvPosts.setLayoutManager(gridLayoutManager);
 
         queryPosts();
 
-        currentUser = ParseUser.getCurrentUser();
-        tvUsername.setText(currentUser.getUsername());
+        user = ParseUser.getCurrentUser();
+        tvUsername.setText(user.getUsername());
         // load user data in background
-        currentUser.fetchInBackground(new GetCallback<ParseUser>() {
+        user.fetchInBackground(new GetCallback<ParseUser>() {
             @Override
             public void done(ParseUser user, ParseException e) {
                 if (e != null) {
@@ -128,8 +135,8 @@ public class ProfileFragment extends PostsFragment {
                 final Bitmap takenImage = BitmapFactory.decodeFile(cameraHelper.photoFile.getAbsolutePath());
                 // RESIZE BITMAP, see section below
                 // Load the taken image into a preview
-                currentUser.put("image", new ParseFile(cameraHelper.photoFile));
-                currentUser.saveInBackground(new SaveCallback() {
+                user.put("image", new ParseFile(cameraHelper.photoFile));
+                user.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
                         ivUserImage.setImageBitmap(takenImage);
@@ -141,11 +148,10 @@ public class ProfileFragment extends PostsFragment {
         }
     }
 
-    @Override
     protected void queryPosts() {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.include(Post.KEY_USER);
-        query.whereEqualTo(Post.KEY_USER, ParseUser.getCurrentUser().getUsername());
+        query.whereEqualTo(Post.KEY_USER, ParseUser.getCurrentUser());
         query.setLimit(20);
         query.addDescendingOrder(Post.KEY_CREATED_AT);
         query.findInBackground(new FindCallback<Post>() {

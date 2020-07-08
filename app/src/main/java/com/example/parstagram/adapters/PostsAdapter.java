@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.parstagram.Helper;
 import com.example.parstagram.R;
 import com.example.parstagram.activities.PostDetailsActivity;
+import com.example.parstagram.activities.UserProfileActivity;
 import com.example.parstagram.models.Like;
 import com.example.parstagram.models.Post;
 import com.google.android.material.button.MaterialButton;
@@ -65,6 +66,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
 
         private static final int DETAILS_REQUEST_CODE = 20;
 
+        Post post;
         TextView tvUsername;
         TextView tvDescription;
         ImageView ivImage;
@@ -84,7 +86,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             btnLike = itemView.findViewById(R.id.btnLike);
         }
 
-        public void bind(Post post) {
+        public void bind(final Post post) {
+            this.post = post;
             tvDescription.setText(post.getDescription());
             tvUsername.setText(post.getUser().getUsername());
             // load post's image
@@ -126,6 +129,15 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                             }
                         });
                     }
+                }
+            });
+
+            tvUsername.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, UserProfileActivity.class);
+                    intent.putExtra("user", post.getUser());
+                    context.startActivity(intent);
                 }
             });
         }
