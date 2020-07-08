@@ -1,34 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.ComposeFragment"
     android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/etDescription"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilDescription"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Description..."></EditText>
+        android:layout_margin="16dp"
+        app:hintEnabled="false">
 
-    <Button
-        android:id="@+id/btnCaptureImage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Take Picture"></Button>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start|top"
+            android:hint="Write caption..."
+            android:minLines="3" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <ImageView
         android:id="@+id/ivPostImage"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:layout_below="@id/tilDescription"
         tools:srcCompat="@tools:sample/avatars"></ImageView>
 
     <Button
-        android:id="@+id/btnSubmit"
-        android:layout_width="match_parent"
+        android:id="@+id/btnCaptureImage"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Submit"></Button>
+        android:layout_below="@id/ivPostImage"
+        android:layout_centerHorizontal="true"
+        android:text="Take image"
+        android:textColor="@color/lightGreen" />
 
-</LinearLayout>
+    <Button
+        android:id="@+id/btnSubmit"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnCaptureImage"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="6dp"
+        android:text="Post"></Button>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnCaptureImage"
+        android:layout_centerHorizontal="true"
+        android:progressDrawable="@drawable/circular_progress_bar"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+</RelativeLayout>

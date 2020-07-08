@@ -4,23 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp">
+    android:layout_marginTop="16dp">
+
+    <ImageView
+        android:id="@+id/ivUserImage"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        app:srcCompat="@drawable/ic_baseline_person_24" />
 
     <TextView
         android:id="@+id/tvUsername"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+        android:layout_height="40dp"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="2dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="2dp"
-        android:text="TextView" />
+        android:layout_toRightOf="@id/ivUserImage"
+        android:gravity="center_vertical"
+        android:text="TextView"
+        android:textColor="#000000"
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/ivImage"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_below="@id/tvUsername"
+        android:layout_height="200dp"
+        android:layout_below="@id/ivUserImage"
+        android:layout_marginTop="5dp"
         android:scaleType="centerCrop"
         tools:srcCompat="@tools:sample/avatars" />
 
@@ -29,6 +40,57 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/ivImage"
-        android:layout_marginBottom="8dp"
-        android:text="TextView" />
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="8dp"
+        android:text="TextView"
+        android:textColor="#000000" />
+
+    <RelativeLayout
+        android:id="@+id/rlIconContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvDescription"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnLike"
+            style="@style/IconOnlyButton"
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            app:icon="@drawable/ufi_heart"
+            app:iconTint="@android:color/black" />
+
+        <Button
+            android:id="@+id/btnComment"
+            style="@style/IconOnlyButton"
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_toRightOf="@id/btnLike"
+            app:icon="@drawable/ufi_comment"
+            app:iconTint="@android:color/black" />
+
+        <Button
+            android:id="@+id/btnShare"
+            style="@style/IconOnlyButton"
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_toRightOf="@id/btnComment"
+            app:icon="@drawable/direct"
+            app:iconGravity="textStart"
+            app:iconTint="@android:color/black" />
+
+        <Button
+            android:id="@+id/btnSave"
+            style="@style/IconOnlyButton"
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            app:icon="@drawable/ufi_save" />
+    </RelativeLayout>
+
 </RelativeLayout>

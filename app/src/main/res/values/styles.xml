@@ -1,10 +1,22 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">#000000</item>
     </style>
 
+    <style name="ToolbarTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:fontFamily">@font/dancing_script</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
+    <style name="IconOnlyButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="iconGravity">textStart</item>
+        <item name="iconSize">20dp</item>
+        <item name="iconTint">#000000</item>
+    </style>
 </resources>
