@@ -39,6 +39,9 @@ import java.util.List;
 public class PostDetailsActivity extends AppCompatActivity {
 
     private static final String TAG = "PostDetailsActivity";
+    private static final String KEY_EXTRA_USER = "user";
+    private static final String KEY_USER_IMAGE = "image";
+    private static final String KEY_EXTRA_POST_ID = "postId";
 
     TextView tvUsername;
     TextView tvDescription;
@@ -75,7 +78,7 @@ public class PostDetailsActivity extends AppCompatActivity {
         btnLike = findViewById(R.id.btnLike);
         tvRelativeTimestamp = findViewById(R.id.tvRelativeTimestamp);
 
-        String postId = getIntent().getStringExtra("postId");
+        String postId = getIntent().getStringExtra(KEY_EXTRA_POST_ID);
         getPost(postId);
 
         // display user's image in comment section
@@ -86,7 +89,7 @@ public class PostDetailsActivity extends AppCompatActivity {
                     Log.e(TAG, "issue with getUser", e);
                     return;
                 }
-                Helper.loadCircleCropImage(PostDetailsActivity.this, ivUserCommentImage, getUser.getParseFile("image"));
+                Helper.loadCircleCropImage(PostDetailsActivity.this, ivUserCommentImage, getUser.getParseFile(KEY_USER_IMAGE));
             }
         });
 
@@ -127,7 +130,7 @@ public class PostDetailsActivity extends AppCompatActivity {
 
     private void goToUserProfile(ParseUser user) {
         Intent intent = new Intent(PostDetailsActivity.this, UserProfileActivity.class);
-        intent.putExtra("user", user);
+        intent.putExtra(KEY_EXTRA_USER, user);
         startActivity(intent);
     }
 
@@ -161,7 +164,7 @@ public class PostDetailsActivity extends AppCompatActivity {
         // display post's image
         Helper.loadImage(PostDetailsActivity.this, ivImage, post.getImage());
         // display user's image
-        Helper.loadCircleCropImage(PostDetailsActivity.this, ivUserImage, post.getUser().getParseFile("image"));
+        Helper.loadCircleCropImage(PostDetailsActivity.this, ivUserImage, post.getUser().getParseFile(KEY_USER_IMAGE));
     }
 
     private void btnSendCommentOnClick() {

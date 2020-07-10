@@ -37,6 +37,9 @@ import java.util.List;
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> {
 
     private static final String TAG = "PostsAdapter";
+    private static final String KEY_EXTRA_POST_ID = "postId";
+    private static final String KEY_EXTRA_USER = "user";
+    private static final String KEY_USER_IMAGE = "image";
 
     Context context;
     List<Post> posts;
@@ -105,7 +108,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             // load post's image
             Helper.loadImage(context, ivImage, post.getImage());
             // load user's image
-            Helper.loadCircleCropImage(context, ivUserImage, post.getUser().getParseFile("image"));
+            Helper.loadCircleCropImage(context, ivUserImage, post.getUser().getParseFile(KEY_USER_IMAGE));
             checkLiked();
             checkSavedPost();
 
@@ -199,15 +202,14 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
 
         private void goToUserProfile(ParseUser user) {
             Intent intent = new Intent(context, UserProfileActivity.class);
-            intent.putExtra("user", user);
+            intent.putExtra(KEY_EXTRA_USER, user);
             context.startActivity(intent);
         }
 
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(context, PostDetailsActivity.class);
-            intent.putExtra("postId", post.getObjectId());
-//            intent.putExtra("post", posts.get(getAdapterPosition()));
+            intent.putExtra(KEY_EXTRA_POST_ID, post.getObjectId());
             context.startActivity(intent);
         }
 

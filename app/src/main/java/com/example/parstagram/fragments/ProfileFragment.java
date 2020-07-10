@@ -47,6 +47,7 @@ public class ProfileFragment extends Fragment {
 
     private static final String TAG = "ProfileFragment";
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
+    private static final String KEY_USER_IMAGE = "image";
 
     CameraHelper cameraHelper;
     ParseUser user;
@@ -77,7 +78,6 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int position = tab.getPosition();
-                Log.i(TAG, "position " + position);
                 if (position == 0) { // all posts
                     queryAllPosts();
                 }
@@ -138,7 +138,7 @@ public class ProfileFragment extends Fragment {
                     Log.e(TAG, "Issues with getting user", e);
                     return;
                 }
-                Helper.loadImage(getContext(), ivUserImage, user.getParseFile("image"));
+                Helper.loadImage(getContext(), ivUserImage, user.getParseFile(KEY_USER_IMAGE));
             }
         });
 
@@ -158,7 +158,7 @@ public class ProfileFragment extends Fragment {
                 final Bitmap takenImage = BitmapFactory.decodeFile(cameraHelper.photoFile.getAbsolutePath());
                 // RESIZE BITMAP, see section below
                 // Load the taken image into a preview
-                user.put("image", new ParseFile(cameraHelper.photoFile));
+                user.put(KEY_USER_IMAGE, new ParseFile(cameraHelper.photoFile));
                 user.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {

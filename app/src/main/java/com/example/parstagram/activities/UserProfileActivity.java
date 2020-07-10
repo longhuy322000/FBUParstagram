@@ -34,6 +34,8 @@ import java.util.List;
 public class UserProfileActivity extends AppCompatActivity {
 
     private static final String TAG = "UserProfileActivity";
+    private static final String KEY_USER_IMAGE = "image";
+    private static final String KEY_EXTRA_USER = "user";
 
     ParseUser user;
     TextView tvUsername;
@@ -47,7 +49,7 @@ public class UserProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
-        user = getIntent().getParcelableExtra("user");
+        user = getIntent().getParcelableExtra(KEY_EXTRA_USER);
 
         rvPosts = findViewById(R.id.rvPosts);
         tvUsername = findViewById(R.id.tvUsername);
@@ -62,7 +64,7 @@ public class UserProfileActivity extends AppCompatActivity {
         queryPosts();
 
         tvUsername.setText(user.getUsername());
-        Helper.loadCircleCropImage(UserProfileActivity.this, ivUserImage, user.getParseFile("image"));
+        Helper.loadCircleCropImage(UserProfileActivity.this, ivUserImage, user.getParseFile(KEY_USER_IMAGE));
     }
 
     protected void queryPosts() {

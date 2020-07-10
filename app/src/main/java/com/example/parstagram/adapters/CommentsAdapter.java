@@ -19,6 +19,7 @@ import java.util.List;
 
 public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHolder> {
 
+    private static final String KEY_USER_IMAGE = "image";
     Context context;
     List<Comment> comments;
 
@@ -60,7 +61,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
         }
 
         public void bind(Comment comment) {
-            Helper.loadCircleCropImage(context, ivUserImage, comment.getUser().getParseFile("image"));
+            Helper.loadCircleCropImage(context, ivUserImage, comment.getUser().getParseFile(KEY_USER_IMAGE));
             tvUsername.setText(comment.getUser().getUsername());
             tvComment.setText(comment.getComment());
         }
