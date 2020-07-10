@@ -5,8 +5,10 @@ import android.app.Application;
 import com.example.parstagram.models.Comment;
 import com.example.parstagram.models.Like;
 import com.example.parstagram.models.Post;
+import com.example.parstagram.models.SavedPost;
 import com.parse.Parse;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -20,6 +22,7 @@ public class ParseApplication extends Application {
         ParseObject.registerSubclass(Post.class);
         ParseObject.registerSubclass(Comment.class);
         ParseObject.registerSubclass(Like.class);
+        ParseObject.registerSubclass(SavedPost.class);
 
         // Use for monitoring Parse OkHttp traffic
         // Can be Level.BASIC, Level.HEADERS, or Level.BODY

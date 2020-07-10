@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -43,7 +44,6 @@ public class PostDetailsActivity extends AppCompatActivity {
     TextView tvDescription;
     ImageView ivImage;
     TextView tvLikes;
-    TextView tvTimestamp;
     ImageView ivUserCommentImage;
     ImageView ivUserImage;
     EditText etComment;
@@ -51,6 +51,7 @@ public class PostDetailsActivity extends AppCompatActivity {
     MaterialButton btnLike;
     RecyclerView rvComments;
     CommentsAdapter adapter;
+    TextView tvRelativeTimestamp;
 
     Boolean liked;
     Post post;
@@ -67,24 +68,15 @@ public class PostDetailsActivity extends AppCompatActivity {
         tvDescription = findViewById(R.id.tvDescription);
         ivImage = findViewById(R.id.ivImage);
         tvLikes = findViewById(R.id.tvLikes);
-        tvTimestamp = findViewById(R.id.tvTimestamp);
         ivUserCommentImage = findViewById(R.id.ivUserCommentImage);
         ivUserImage = findViewById(R.id.ivUserImage);
         etComment = findViewById(R.id.etComment);
         btnSendComment = findViewById(R.id.btnSendComment);
         btnLike = findViewById(R.id.btnLike);
+        tvRelativeTimestamp = findViewById(R.id.tvRelativeTimestamp);
 
-        post = getIntent().getParcelableExtra("post");
-        tvUsername.setText(post.getUser().getUsername());
-        tvDescription.setText(post.getDescription());
-
-        // set likes TextView
-        tvLikes.setText(post.getLikesString());
-
-        // display post's image
-        Helper.loadImage(PostDetailsActivity.this, ivImage, post.getImage());
-        // display user's image
-        Helper.loadCircleCropImage(PostDetailsActivity.this, ivUserImage, post.getUser().getParseFile("image"));
+        String postId = getIntent().getStringExtra("postId");
+        getPost(postId);
 
         // display user's image in comment section
         ParseUser.getCurrentUser().fetchInBackground(new GetCallback<ParseUser>() {
@@ -105,7 +97,6 @@ public class PostDetailsActivity extends AppCompatActivity {
                 btnLikeOnClick();
             }
         });
-
         btnSendComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,8 +110,58 @@ public class PostDetailsActivity extends AppCompatActivity {
         rvComments.setAdapter(adapter);
         rvComments.setLayoutManager(new LinearLayoutManager(this));
 
-        checkLiked();
-        queryComments();
+        tvUsername.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToUserProfile(post.getUser());
+            }
+        });
+
+        ivUserImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToUserProfile(post.getUser());
+            }
+        });
+    }
+
+    private void goToUserProfile(ParseUser user) {
+        Intent intent = new Intent(PostDetailsActivity.this, UserProfileActivity.class);
+        intent.putExtra("user", user);
+        startActivity(intent);
+    }
+
+    private void getPost(String objectId) {
+        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+        query.include(Post.KEY_USER);
+        query.whereEqualTo(Post.KEY_OBJECT_ID, objectId);
+        query.findInBackground(new FindCallback<Post>() {
+            @Override
+            public void done(List<Post> posts, ParseException e) {
+                if (e != null) {
+                    Log.i(TAG, "error loading post");
+                    return;
+                }
+                post = posts.get(0);
+                bindData();
+                checkLiked();
+                queryComments();
+            }
+        });
+    }
+
+    private void bindData() {
+        tvUsername.setText(post.getUser().getUsername());
+        tvDescription.setText(post.getDescription());
+        tvRelativeTimestamp.setText(Post.getRelativeTimeAgo(post.getCreatedAt().toString()));
+
+        // set likes TextView
+        tvLikes.setText(post.getLikesString());
+
+        // display post's image
+        Helper.loadImage(PostDetailsActivity.this, ivImage, post.getImage());
+        // display user's image
+        Helper.loadCircleCropImage(PostDetailsActivity.this, ivUserImage, post.getUser().getParseFile("image"));
     }
 
     private void btnSendCommentOnClick() {

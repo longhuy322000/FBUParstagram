@@ -28,25 +28,31 @@ The following **stretch** features are implemented:
 - User Profiles:
   - [x] Allow the logged in user to add a profile photo
   - [x] Display the profile photo with each post
-  - [ ] Tapping on a post's username or profile photo goes to that user's profile page
+  - [x] Tapping on a post's username or profile photo goes to that user's profile page
   - [x] User Profile shows posts in a grid view
 - [x] User can comment on a post and see all comments for each post in the post details screen.
 - [x] User can like a post and see number of likes for each post in the post details screen.
 
 The following **additional** features are implemented:
 
-- [ ] List anything else that you can get done to improve the app functionality!
+- [x] List anything else that you can get done to improve the app functionality!
+- Allow user to pick an image from stored media
+- Allow user to save posts and view them in profile
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
-1.
-2.
+1. Material Design is amazing. You should utilize this library to add visual polish to the app
+2. For a more complicated project like this, using viewbinding will simplify your code. You should start using viewbinding at the beginning, unlike me
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='gifs/walkthrough_1' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+
+<img src='gifs/walkthrough_2' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+
+<img src='gifs/walkthrough_3' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 

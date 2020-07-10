@@ -20,6 +20,8 @@ import java.util.List;
 
 public class ProfilePostsAdapter extends RecyclerView.Adapter<ProfilePostsAdapter.ViewHolder> {
 
+    public static final String KEY_POST_ID = "postId";
+
     Context context;
     List<Post> posts;
 
@@ -64,7 +66,7 @@ public class ProfilePostsAdapter extends RecyclerView.Adapter<ProfilePostsAdapte
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(context, PostDetailsActivity.class);
-            intent.putExtra("post", posts.get(getAdapterPosition()));
+            intent.putExtra(KEY_POST_ID, posts.get(getAdapterPosition()).getObjectId());
             context.startActivity(intent);
         }
     }

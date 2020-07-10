@@ -11,7 +11,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="16dp"
-        app:srcCompat="@drawable/ic_baseline_person_24" />
+        app:srcCompat="@drawable/default_user" />
 
     <TextView
         android:id="@+id/tvUsername"
@@ -84,13 +84,23 @@
             app:iconTint="@android:color/black" />
 
         <Button
-            android:id="@+id/btnSave"
+            android:id="@+id/btnSavePost"
             style="@style/IconOnlyButton"
             android:layout_width="30dp"
             android:layout_height="40dp"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="16dp"
             app:icon="@drawable/ufi_save" />
+
+        <TextView
+            android:id="@+id/tvRelativeTimestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnLike"
+            android:layout_marginStart="16dp"
+            android:text="9 mins ago"
+            android:textColor="#959595"
+            android:textStyle="italic" />
     </RelativeLayout>
 
 </RelativeLayout>

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,8 +21,11 @@ import com.example.parstagram.activities.PostDetailsActivity;
 import com.example.parstagram.activities.UserProfileActivity;
 import com.example.parstagram.models.Like;
 import com.example.parstagram.models.Post;
+import com.example.parstagram.models.SavedPost;
 import com.google.android.material.button.MaterialButton;
+import com.parse.DeleteCallback;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
@@ -72,8 +76,13 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         ImageView ivImage;
         ImageView ivUserImage;
         MaterialButton btnLike;
+        MaterialButton btnSavePost;
+        TextView tvRelativeTimestamp;
+
         Boolean liked;
         Like like;
+        Boolean saved;
+        SavedPost savedPost;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -84,17 +93,21 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             ivImage = itemView.findViewById(R.id.ivImage);
             ivUserImage = itemView.findViewById(R.id.ivUserImage);
             btnLike = itemView.findViewById(R.id.btnLike);
+            btnSavePost = itemView.findViewById(R.id.btnSavePost);
+            tvRelativeTimestamp = itemView.findViewById(R.id.tvRelativeTimestamp);
         }
 
         public void bind(final Post post) {
             this.post = post;
             tvDescription.setText(post.getDescription());
             tvUsername.setText(post.getUser().getUsername());
+            tvRelativeTimestamp.setText(Post.getRelativeTimeAgo(post.getCreatedAt().toString()));
             // load post's image
             Helper.loadImage(context, ivImage, post.getImage());
             // load user's image
             Helper.loadCircleCropImage(context, ivUserImage, post.getUser().getParseFile("image"));
             checkLiked();
+            checkSavedPost();
 
             // button like onClick
             btnLike.setOnClickListener(new View.OnClickListener() {
@@ -132,20 +145,69 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 }
             });
 
+            btnSavePost.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Post post = posts.get(getAdapterPosition());
+                    if (!saved) {
+                        savedPost = new SavedPost();
+                        savedPost.setUser(ParseUser.getCurrentUser());
+                        savedPost.setPost(post);
+                        savedPost.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e != null) {
+                                    Log.e(TAG, "Issues with saving post");
+                                    return;
+                                }
+                                saved = true;
+                                setSaveActive();
+                            }
+                        });
+                    }
+                    else {
+                        savedPost.deleteInBackground(new DeleteCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e != null) {
+                                    Log.e(TAG, "Issues with deleting savedPost");
+                                    return;
+                                }
+                                saved = false;
+                                savedPost = null;
+                                setSaveInActive();
+                            }
+                        });
+                    }
+                }
+            });
+
             tvUsername.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(context, UserProfileActivity.class);
-                    intent.putExtra("user", post.getUser());
-                    context.startActivity(intent);
+                    goToUserProfile(post.getUser());
                 }
             });
+
+            ivUserImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    goToUserProfile(post.getUser());
+                }
+            });
+        }
+
+        private void goToUserProfile(ParseUser user) {
+            Intent intent = new Intent(context, UserProfileActivity.class);
+            intent.putExtra("user", user);
+            context.startActivity(intent);
         }
 
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(context, PostDetailsActivity.class);
-            intent.putExtra("post", posts.get(getAdapterPosition()));
+            intent.putExtra("postId", post.getObjectId());
+//            intent.putExtra("post", posts.get(getAdapterPosition()));
             context.startActivity(intent);
         }
 
@@ -168,7 +230,30 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                         liked = true;
                         like = likes.get(0);
                         setLikeActive();
-                        Log.i(TAG, posts.get(getAdapterPosition()).getDescription());
+                    }
+                }
+            });
+        }
+
+        private void checkSavedPost() {
+            ParseQuery<SavedPost> query = ParseQuery.getQuery(SavedPost.class);
+            query.whereEqualTo(SavedPost.KEY_POST, posts.get(getAdapterPosition()));
+            query.whereEqualTo(SavedPost.KEY_USER, ParseUser.getCurrentUser());
+            query.findInBackground(new FindCallback<SavedPost>() {
+                @Override
+                public void done(List<SavedPost> savedPosts, ParseException e) {
+                    if (e != null) {
+                        Log.e(TAG, "Issues with checking savedPost");
+                        return;
+                    }
+                    if (savedPosts.isEmpty()) {
+                        saved = false;
+                        setSaveInActive();
+                    }
+                    else {
+                        saved = true;
+                        savedPost = savedPosts.get(0);
+                        setSaveActive();
                     }
                 }
             });
@@ -182,6 +267,16 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         public void setLikeInactive() {
             btnLike.setIcon(context.getDrawable(R.drawable.ufi_heart));
             btnLike.setIconTintResource(R.color.black);
+        }
+
+        public void setSaveActive() {
+            btnSavePost.setIcon(context.getDrawable(R.drawable.ufi_save_active));
+            btnSavePost.setIconTintResource(R.color.black);
+        }
+
+        public void setSaveInActive() {
+            btnSavePost.setIcon(context.getDrawable(R.drawable.ufi_save));
+            btnSavePost.setIconTintResource(R.color.black);
         }
     }
 }

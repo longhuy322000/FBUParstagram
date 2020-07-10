@@ -142,19 +142,21 @@
                 tools:text="90 likes" />
 
             <TextView
-                android:id="@+id/tvTimestamp"
+                android:id="@+id/tvRelativeTimestamp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/rlIconsContainer"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="16dp"
-                tools:text="1 day ago" />
+                android:layout_below="@id/tvLikes"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="5dp"
+                android:textColor="#959595"
+                android:textStyle="italic"
+                tools:text="9 mins ago" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvComments"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/tvLikes"
+                android:layout_below="@id/tvRelativeTimestamp"
                 android:layout_marginTop="16dp" />
 
             <RelativeLayout

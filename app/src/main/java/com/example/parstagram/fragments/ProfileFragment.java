@@ -16,13 +16,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.parstagram.CameraHelper;
 import com.example.parstagram.Helper;
 import com.example.parstagram.activities.LoginActivity;
@@ -30,7 +26,8 @@ import com.example.parstagram.R;
 import com.example.parstagram.adapters.PostsAdapter;
 import com.example.parstagram.adapters.ProfilePostsAdapter;
 import com.example.parstagram.models.Post;
-import com.example.parstagram.models.User;
+import com.example.parstagram.models.SavedPost;
+import com.google.android.material.tabs.TabLayout;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.LogOutCallback;
@@ -58,10 +55,11 @@ public class ProfileFragment extends Fragment {
     ImageView ivUserImage;
     RecyclerView rvPosts;
     ProfilePostsAdapter adapter;
+    TabLayout tabLayout;
+
     List<Post> allPosts;
 
-    public ProfileFragment() {
-    }
+    public ProfileFragment() { }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -73,6 +71,31 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        tabLayout = view.findViewById(R.id.tlTabs);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int position = tab.getPosition();
+                Log.i(TAG, "position " + position);
+                if (position == 0) { // all posts
+                    queryAllPosts();
+                }
+                else if (position == 1) { // saved posts
+                    querySavedPosts();
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
         cameraHelper = new CameraHelper(getContext(), this);
         rvPosts = view.findViewById(R.id.rvPosts);
@@ -103,7 +126,7 @@ public class ProfileFragment extends Fragment {
         StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         rvPosts.setLayoutManager(gridLayoutManager);
 
-        queryPosts();
+        queryAllPosts();
 
         user = ParseUser.getCurrentUser();
         tvUsername.setText(user.getUsername());
@@ -148,7 +171,7 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-    protected void queryPosts() {
+    protected void queryAllPosts() {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.include(Post.KEY_USER);
         query.whereEqualTo(Post.KEY_USER, ParseUser.getCurrentUser());
@@ -161,7 +184,29 @@ public class ProfileFragment extends Fragment {
                     Log.e(TAG,"Issue with getting posts", e);
                     return;
                 }
+                allPosts.clear();
                 allPosts.addAll(posts);
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void querySavedPosts() {
+        ParseQuery<SavedPost> query = ParseQuery.getQuery(SavedPost.class);
+        query.include(SavedPost.KEY_USER);
+        query.include(SavedPost.KEY_POST);
+        query.whereEqualTo(SavedPost.KEY_USER, ParseUser.getCurrentUser());
+        query.setLimit(20);
+        query.addDescendingOrder(Post.KEY_CREATED_AT);
+        query.findInBackground(new FindCallback<SavedPost>() {
+            @Override
+            public void done(List<SavedPost> savedPosts, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG,"Issue with getting posts", e);
+                    return;
+                }
+                allPosts.clear();
+                allPosts.addAll(SavedPost.fromSavedPostsArray(savedPosts));
                 adapter.notifyDataSetChanged();
             }
         });

@@ -17,6 +17,7 @@ import java.util.Locale;
 @ParseClassName("Post")
 public class Post extends ParseObject {
 
+    public static final String KEY_OBJECT_ID = "objectId";
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_IMAGE = "image";
     public static final String KEY_USER = "user";

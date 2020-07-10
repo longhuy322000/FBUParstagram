@@ -27,7 +27,7 @@
         android:layout_height="70dp"
         android:layout_marginStart="8dp"
         android:scaleType="centerCrop"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:srcCompat="@drawable/default_user" />
 
     <TextView
         android:id="@+id/tvUsername"
@@ -42,12 +42,35 @@
         android:textStyle="bold"
         tools:text="username" />
 
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tlTabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivUserImage"
+        android:layout_marginTop="16dp">
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/postsTab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/vector_all_posts"
+            android:text="Posts" />
+        " />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/saved"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/ufi_save"
+            android:text="Saved" />
+
+    </com.google.android.material.tabs.TabLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPosts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/ivUserImage"
+        android:layout_below="@id/tlTabs"
         android:layout_marginTop="16dp" />
 
 </RelativeLayout>
