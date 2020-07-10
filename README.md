@@ -48,11 +48,11 @@ Please list two areas of the assignment you'd like to **discuss further with you
 
 Here's a walkthrough of implemented user stories:
 
-<img src='gifs/walkthrough_1' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='gifs/walkthrough_1.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
-<img src='gifs/walkthrough_2' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='gifs/walkthrough_2.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
-<img src='gifs/walkthrough_3' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='gifs/walkthrough_3.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
