@@ -2,7 +2,7 @@
 
 **Parstagram** is a photo sharing app using Parse as its backend.
 
-Time spent: **5** hours spent in total
+Time spent: **20** hours spent in total
 
 ## User Stories
 
@@ -53,6 +53,8 @@ Here's a walkthrough of implemented user stories:
 <img src='gifs/walkthrough_2' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 <img src='gifs/walkthrough_3' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+
+<img src='gifs/walkthrough_4' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
