@@ -54,7 +54,7 @@ Here's a walkthrough of implemented user stories:
 
 <img src='gifs/walkthrough_3.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
-<img src='gifs/walkthrough_4' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='gifs/walkthrough_4.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
